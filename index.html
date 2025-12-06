@@ -2,176 +2,77 @@
 <html lang="en">
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Nicky's Festive Quiz</title>
-  <style>
-    :root{--bg:#0f1724;--card:#0b1220;--accent:#ef4444;--muted:#94a3b8;--glass: rgba(255,255,255,0.03)}
-    body{font-family:Inter, system-ui, Arial; background:linear-gradient(135deg,#071225 0%, #0b2030 100%); color:#e6eef6; margin:0; padding:24px;}
-    .container{max-width:900px;margin:0 auto;background:var(--card);padding:22px;border-radius:12px;box-shadow:0 8px 30px rgba(2,6,23,0.6)}
-    h1{margin:0 0 8px;font-size:28px}
-    .meta{color:var(--muted);margin-bottom:18px}
-    .start {display:flex;gap:8px;align-items:center;margin-bottom:14px}
-    input[type=text]{padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:var(--glass);color:inherit}
-    button{background:var(--accent);border:none;padding:10px 14px;border-radius:8px;color:#fff;cursor:pointer}
-    .question-card{background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent); padding:18px;border-radius:10px}
-    .options{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
-    .option{padding:12px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);cursor:pointer}
-    .option.correct{outline:3px solid rgba(34,197,94,0.15);}
-    .option.wrong{opacity:0.6}
-    .footer{display:flex;justify-content:space-between;align-items:center;margin-top:14px;color:var(--muted)}
-    .leaderboard{margin-top:18px}
-    table{width:100%;border-collapse:collapse}
-    th,td{padding:8px;text-align:left;border-bottom:1px solid rgba(255,255,255,0.03)}
-    .small{font-size:13px;color:var(--muted)}
-    .center{text-align:center}
-    @media(max-width:640px){.options{grid-template-columns:1fr}}
-  </style>
+<meta charset="utf-8" />
+<title>Nicky's Festive Quiz</title>
 <style>
-/* Phone-friendly layout */
-body {
-  margin: 0;
-  padding: 0;
-  font-family: Arial, sans-serif;
-  background: #fafafa;
-  overflow-x: hidden;
-  -webkit-text-size-adjust: 100%; /* Prevent zooming text on iOS */
-}
-
-#main-container {
-  width: 100%;
-  max-width: 600px;
-  margin: auto;
-  padding: 15px;
-}
-
-.question-block {
-  background: white;
-  padding: 15px;
-  margin-bottom: 15px;
-  border-radius: 10px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-.question {
-  font-size: 18px;
-  margin-bottom: 10px;
-}
-
-.answer-option {
-  display: block;
-  padding: 8px 0;
-  font-size: 16px;
-}
-
-button {
-  width: 100%;
-  padding: 15px;
-  font-size: 18px;
-  border-radius: 10px;
-  border: none;
-  background: #008cff;
-  color: white;
-  margin-top: 20px;
-}
+body {margin:0;padding:20px;font-family:Arial,sans-serif;background:#fafafa;}
+.container {max-width:600px;margin:auto;}
+h1{text-align:center;}
+.question-block{background:white;padding:20px;margin:15px 0;border-radius:10px;box-shadow:0 2px 5px rgba(0,0,0,0.1);}
+.options label{display:block;padding:10px;margin:5px 0;background:#eee;border-radius:6px;cursor:pointer;}
+.options input{margin-right:10px;}
+button{padding:12px 20px;font-size:16px;border:none;border-radius:8px;background:#008cff;color:white;cursor:pointer;margin-top:10px;width:100%;}
 </style>
-
 </head>
 <body>
-  <div class="container">
-    <h1>Nicky's Festive Quiz</h1>
-    
-
-    
-
-    <div id="quizArea" style="display:none">
-      <div class="question-card">
-        <div id="progress" class="small"></div>
-        <h2 id="questionText">Question</h2>
-        <div class="options" id="options"></div>
-        <div class="footer">
-          <div class="small" id="feedback"></div>
-          <div>
-            <button id="nextBtn" style="display:none">Next</button>
-            <button id="quitBtn">Quit</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    
-    </div>
-
-    <!-- Leaderboard removed as requested -->
-    </div>
-
-    <div style="margin-top:14px;color:var(--muted);font-size:13px"><!-- Footer note kept minimal -->
-  </div>
-
+<div class="container">
+<h1>Nicky's Festive Quiz</h1>
+<div id="quiz"></div>
+<div id="result" style="display:none;text-align:center;"></div>
+</div>
 <script>
-// Master list of 50 hard questions already in file
-// Now select 12 random ones on load
+// Hardcoded sample questions - replace with your full 50-question pool
+const questions = [
+  {question:"Which Premier League club had the lowest points total ever?",answers:["Huddersfield Town","Derby County","Sunderland","Portsmouth"],correct:1},
+  {question:"Which player recorded the first perfect hat-trick in the Premier League?",answers:["Jimmy Floyd Hasselbaink","Robbie Fowler","Sergio Agüero","Les Ferdinand"],correct:1},
+  {question:"Which 1960s band created one of the first rock concept albums?",answers:["The Pretty Things","The Moody Blues","King Crimson","The Kinks"],correct:0},
+  {question:"Which 1980s band was first to use the Fairlight CMI?",answers:["Peter Gabriel","Art of Noise","New Order","Yazoo"],correct:1},
+  {question:"Which Beatles song was banned by the BBC?",answers:["Lucy in the Sky with Diamonds","Day Tripper","A Day in the Life","Rain"],correct:2},
+  {question:"Which 1980s guitarist played the solo on Michael Jackson's 'Beat It'?",answers:["Slash","Eddie Van Halen","Steve Lukather","Jeff Beck"],correct:1},
+  {question:"Which Premier League team conceded fastest goal?",answers:["Aston Villa","Watford","Southampton","Bournemouth"],correct:2},
+  {question:"Which 1960s producer is known for Wall of Sound?",answers:["Phil Spector","George Martin","Berry Gordy","Tom Wilson"],correct:0},
+  {question:"Which 1980s synth-pop band released 'Architecture & Morality'?",answers:["OMD","Ultravox","Depeche Mode","Human League"],correct:0},
+  {question:"Which Premier League club was deducted 9 points for administration?",answers:["Portsmouth","Leeds United","Bolton Wanderers","Wigan Athletic"],correct:0},
+  {question:"Which Beatles track used tape loops by John Lennon?",answers:["Tomorrow Never Knows","Strawberry Fields","Penny Lane","Help!"],correct:0},
+  {question:"Which 1980s singer had hit '99 Luftballons'?",answers:["Nena","Sabrina","Kim Wilde","Sandra"],correct:0}
+];
 
-// Shuffle helper
-function shuffle(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
+// Shuffle and pick 12
+function shuffle(array){for(let i=array.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[array[i],array[j]]=[array[j],array[i]];}return array;}
+const selectedQuestions = shuffle([...questions]).slice(0,12);
+
+let current = 0;
+let score = 0;
+
+function showQuestion(){
+  if(current>=selectedQuestions.length){
+    document.getElementById('quiz').style.display='none';
+    const resultDiv=document.getElementById('result');
+    resultDiv.style.display='block';
+    resultDiv.innerHTML=`<h2>Quiz Complete!</h2><p>Your score: ${score} / ${selectedQuestions.length}</p>`;
+    return;
   }
-  return array;
+  const q=selectedQuestions[current];
+  const quizDiv=document.getElementById('quiz');
+  quizDiv.innerHTML=`<div class='question-block'>
+  <div class='question'>${current+1}. ${q.question}</div>
+  <div class='options'>${q.answers.map((a,i)=>`<label><input type='radio' name='q' value='${i}'>${a}</label>`).join('')}</div>
+  <button id='nextBtn'>Next</button>
+  </div>`;
+  document.getElementById('nextBtn').onclick=()=>{
+    const selected=document.querySelector('input[name=q]:checked');
+    if(selected){
+      if(parseInt(selected.value)===q.correct) score++;
+      current++;
+      showQuestion();
+    }else{
+      alert('Please select an answer');
+    }
+  };
 }
 
-// Use the existing `questions` array from the file
-// (Assumes it is defined globally above this script)
-
-let selectedQuestions = [];
-
-document.addEventListener("DOMContentLoaded", () => {
-  // Shuffle and select 12
-  selectedQuestions = shuffle([...questions]).slice(0, 12);
-
-  startQuiz();
-});
-
-// Render selected questions
-function startQuiz() {
-  const container = document.getElementById("quiz");
-  container.innerHTML = "";
-
-  selectedQuestions.forEach((q, index) => {
-    const block = document.createElement("div");
-    block.className = "question-block";
-
-    let answersHTML = q.answers
-      .map(
-        (ans, i) => `
-        <label class="answer-option">
-          <input type="radio" name="q${index}" value="${i}">
-          <span>${ans}</span>
-        </label>`
-      )
-      .join("");
-
-    block.innerHTML = `
-      <div class="question">${index + 1}. ${q.question}</div>
-      <div class="answers">${answersHTML}</div>
-    `;
-
-    container.appendChild(block);
-  });
-}
+// Auto-start quiz
+showQuestion();
 </script>
-
-<!--
-INSTRUCTIONS & NOTES
-- This single-file quiz (index.html) is ready to publish to GitHub Pages. Create a new repository and push this file as index.html to the main branch (or enable GitHub Pages on the repo) to host.
-- Leaderboard: currently stored locally in the user's browser (localStorage). That means the leaderboard is shared only on that device/browser.
-- To enable a global/shared leaderboard when hosted on GitHub Pages you have three recommended options:
-  1) Add a lightweight server (e.g., Firebase Realtime Database or Firestore). Replace the localStorage functions with REST calls to your database.
-  2) Use the GitHub Gist or a dedicated JSON file in a repo and write a small backend (or use GitHub Actions) to append scores (requires authentication and CORS setup).
-  3) Host a tiny server (Netlify functions, Vercel serverless, or any simple endpoint) that accepts POSTs with {name,score,date} and returns the updated leaderboard. Then update saveLeaderboard() and loadLeaderboard() to call that endpoint.
-- If you want I can modify the code to use Firebase (public rules) or show an example using GitHub Gist + a personal access token — but you'll need to supply credentials when you publish.
--->
-
 </body>
 </html>
