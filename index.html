@@ -23,42 +23,83 @@ button{padding:12px 20px;font-size:16px;border:none;border-radius:8px;background
 <div id="result" style="display:none;text-align:left;"></div>
 </div>
 <script>
-// Full 50-question pool
 const questions = [
-  /* Add all 50+ questions here; each question must have 'question', 'answers', 'correct' */
-  {question:"Which Premier League club had the lowest points total ever?",answers:["Huddersfield Town","Derby County","Sunderland","Portsmouth"],correct:1},
-  {question:"Which player recorded the first perfect hat-trick in the Premier League?",answers:["Jimmy Floyd Hasselbaink","Robbie Fowler","Sergio Agüero","Les Ferdinand"],correct:1},
-  {question:"Which 1960s band created one of the first rock concept albums?",answers:["The Pretty Things","The Moody Blues","King Crimson","The Kinks"],correct:0},
-  {question:"Which 1980s band was first to use the Fairlight CMI?",answers:["Peter Gabriel","Art of Noise","New Order","Yazoo"],correct:1},
-  {question:"Which Beatles song was banned by the BBC?",answers:["Lucy in the Sky with Diamonds","Day Tripper","A Day in the Life","Rain"],correct:2},
-  {question:"Which 1980s guitarist played the solo on Michael Jackson's 'Beat It'?",answers:["Slash","Eddie Van Halen","Steve Lukather","Jeff Beck"],correct:1},
-  {question:"Which Premier League team conceded fastest goal?",answers:["Aston Villa","Watford","Southampton","Bournemouth"],correct:2},
-  {question:"Which 1960s producer is known for Wall of Sound?",answers:["Phil Spector","George Martin","Berry Gordy","Tom Wilson"],correct:0},
-  {question:"Which 1980s synth-pop band released 'Architecture & Morality'?",answers:["OMD","Ultravox","Depeche Mode","Human League"],correct:0},
-  {question:"Which Premier League club was deducted 9 points for administration?",answers:["Portsmouth","Leeds United","Bolton Wanderers","Wigan Athletic"],correct:0},
-  /* ...continue up to 50+ questions... */
+  // Premier League Football
+  {question:"Which Premier League club had the lowest points total ever?", answers:["Huddersfield Town","Derby County","Sunderland","Portsmouth"], correct:1},
+  {question:"Which player recorded the first perfect hat-trick in the Premier League?", answers:["Jimmy Floyd Hasselbaink","Robbie Fowler","Sergio Agüero","Les Ferdinand"], correct:1},
+  {question:"Which Premier League team conceded the fastest goal?", answers:["Aston Villa","Watford","Southampton","Bournemouth"], correct:2},
+  {question:"Which club was deducted 9 points for administration in 2010?", answers:["Portsmouth","Leeds United","Bolton Wanderers","Wigan Athletic"], correct:0},
+  {question:"Who scored the first Premier League goal?", answers:["Eric Cantona","Brian Deane","Alan Shearer","Matthew Le Tissier"], correct:1},
+  {question:"Which team won the Premier League in 2015–16 against 5000–1 odds?", answers:["Leicester City","Manchester United","Chelsea","Arsenal"], correct:0},
+  {question:"Who holds the record for most Premier League goals?", answers:["Wayne Rooney","Alan Shearer","Harry Kane","Sergio Agüero"], correct:1},
+  {question:"Which goalkeeper has the most Premier League clean sheets?", answers:["Petr Čech","David de Gea","Ederson","Peter Schmeichel"], correct:0},
+  {question:"Which team went unbeaten for the entire 2003–04 Premier League season?", answers:["Arsenal","Manchester United","Chelsea","Liverpool"], correct:0},
+  {question:"Who was the youngest player to score a Premier League hat-trick?", answers:["Wayne Rooney","Michael Owen","Cesc Fàbregas","Raheem Sterling"], correct:1},
+  {question:"Which manager has won the most Premier League titles?", answers:["Sir Alex Ferguson","Arsène Wenger","José Mourinho","Pep Guardiola"], correct:0},
+  {question:"Which club has the record for most Premier League wins in a season?", answers:["Manchester City","Chelsea","Manchester United","Liverpool"], correct:0},
+  {question:"Which team was the first promoted team to win the Premier League Player of the Month?", answers:["Leicester City","Ipswich Town","Sunderland","West Bromwich Albion"], correct:3},
+  {question:"Which player scored the fastest Premier League hat-trick?", answers:["Sadio Mané","Thierry Henry","Robbie Fowler","Gabriel Agbonlahor"], correct:0},
+  {question:"Which club has the record for most consecutive Premier League wins?", answers:["Manchester City","Liverpool","Chelsea","Arsenal"], correct:0},
+
+  // 1960s Music
+  {question:"Which 1960s band created one of the first rock concept albums?", answers:["The Pretty Things","The Moody Blues","King Crimson","The Kinks"], correct:0},
+  {question:"Which Beatles song was banned by the BBC?", answers:["Lucy in the Sky with Diamonds","Day Tripper","A Day in the Life","Rain"], correct:2},
+  {question:"Which 1960s producer is known for the Wall of Sound?", answers:["Phil Spector","George Martin","Berry Gordy","Tom Wilson"], correct:0},
+  {question:"Who was the lead singer of The Doors?", answers:["Jim Morrison","Ray Manzarek","Robbie Krieger","John Densmore"], correct:0},
+  {question:"Which British band recorded 'My Generation'?", answers:["The Who","The Rolling Stones","The Kinks","The Yardbirds"], correct:2},
+  {question:"Which 1960s band featured Eric Clapton on guitar?", answers:["Cream","The Beatles","The Hollies","The Byrds"], correct:0},
+  {question:"Which song by The Beatles features the tape loops by John Lennon?", answers:["Tomorrow Never Knows","Strawberry Fields Forever","Penny Lane","Help!"], correct:0},
+  {question:"Who had a hit in 1965 with 'California Girls'?", answers:["The Beach Boys","The Mamas & The Papas","The Byrds","The Monkees"], correct:0},
+  {question:"Which 1960s soul singer performed 'Respect'?", answers:["Aretha Franklin","Diana Ross","Etta James","Gladys Knight"], correct:0},
+  {question:"Which band released 'Good Vibrations' in 1966'?", answers:["The Beach Boys","The Beatles","The Rolling Stones","The Byrds"], correct:0},
+  {question:"Who sang 'I Heard It Through the Grapevine' in 1968?", answers:["Marvin Gaye","Gladys Knight & the Pips","Sam Cooke","Otis Redding"], correct:0},
+  {question:"Which band was known for the album 'Revolver'?", answers:["The Beatles","The Rolling Stones","The Kinks","The Animals"], correct:0},
+  {question:"Who wrote 'House of the Rising Sun'?", answers:["The Animals","The Doors","The Beatles","Bob Dylan"], correct:0},
+  {question:"Which British Invasion band had the hit 'Paint It Black'?", answers:["The Rolling Stones","The Kinks","The Beatles","The Who"], correct:0},
+  {question:"Which 1960s guitarist was nicknamed 'Slowhand'?", answers:["Eric Clapton","Jimi Hendrix","Jeff Beck","Peter Green"], correct:0},
+
+  // 1980s Music
+  {question:"Which 1980s band was first to use the Fairlight CMI?", answers:["Peter Gabriel","Art of Noise","New Order","Yazoo"], correct:1},
+  {question:"Which 1980s guitarist played the solo on Michael Jackson's 'Beat It'?", answers:["Slash","Eddie Van Halen","Steve Lukather","Jeff Beck"], correct:1},
+  {question:"Which 1980s singer had the hit '99 Luftballons'?", answers:["Nena","Sabrina","Kim Wilde","Sandra"], correct:0},
+  {question:"Which 1980s synth-pop band released 'Architecture & Morality'?", answers:["OMD","Ultravox","Depeche Mode","Human League"], correct:0},
+  {question:"Which 1980s band released 'Blue Monday'?", answers:["New Order","Pet Shop Boys","Depeche Mode","Duran Duran"], correct:0},
+  {question:"Who had a hit with 'Sweet Dreams (Are Made of This)'?", answers:["Eurythmics","Tears for Fears","The Human League","Simple Minds"], correct:0},
+  {question:"Which 1980s band released 'Don't You Want Me'?", answers:["The Human League","ABC","Depeche Mode","Spandau Ballet"], correct:0},
+  {question:"Who performed 'Careless Whisper' in 1984?", answers:["George Michael","Wham!","Prince","David Bowie"], correct:0},
+  {question:"Which band released 'Hungry Like the Wolf'?", answers:["Duran Duran","A-ha","Simple Minds","Tears for Fears"], correct:0},
+  {question:"Which 1980s singer is known for 'Every Breath You Take'?", answers:["The Police","Phil Collins","Sting","Peter Gabriel"], correct:0},
+  {question:"Who sang 'Like a Virgin' in 1984?", answers:["Madonna","Cyndi Lauper","Whitney Houston","Pat Benatar"], correct:0},
+  {question:"Which band released 'Rio'?", answers:["Duran Duran","Spandau Ballet","A-ha","Tears for Fears"], correct:0},
+  {question:"Which 1980s band recorded 'West End Girls'?", answers:["Pet Shop Boys","Depeche Mode","Erasure","OMD"], correct:0},
+  {question:"Which 1980s band had a hit with 'Everybody Wants to Rule the World'?", answers:["Tears for Fears","Duran Duran","Spandau Ballet","Simple Minds"], correct:0},
+  {question:"Who performed 'Take On Me'?", answers:["A-ha","Duran Duran","Pet Shop Boys","Wham!"], correct:0},
+  {question:"Which 1980s singer sang 'I Wanna Dance with Somebody'?", answers:["Whitney Houston","Madonna","Cyndi Lauper","Pat Benatar"], correct:0},
+  {question:"Which band released 'Don't You (Forget About Me)' in 1985?", answers:["Simple Minds","The Police","Tears for Fears","Duran Duran"], correct:0},
+  {question:"Which 1980s singer sang 'Time After Time'?", answers:["Cyndi Lauper","Madonna","Whitney Houston","Pat Benatar"], correct:0},
+  {question:"Which 1980s band recorded 'Sweet Child o' Mine'?", answers:["Guns N' Roses","Bon Jovi","Def Leppard","Van Halen"], correct:0},
+  {question:"Which 1980s band released 'Money for Nothing'?", answers:["Dire Straits","Genesis","The Police","Phil Collins"], correct:0},
+  {question:"Which 1980s artist performed 'Purple Rain'?", answers:["Prince","Michael Jackson","David Bowie","George Michael"], correct:0},
+  {question:"Who sang 'Thriller' in 1982?", answers:["Michael Jackson","Prince","Lionel Richie","Whitney Houston"], correct:0},
+  {question:"Which 1980s band released 'Let's Dance'?", answers:["David Bowie","Duran Duran","Simple Minds","The Human League"], correct:0},
+  {question:"Who sang 'Girls Just Want to Have Fun'?", answers:["Cyndi Lauper","Madonna","Whitney Houston","Pat Benatar"], correct:0},
+  {question:"Which band released 'Love Shack' in 1989?", answers:["B-52's","Eurythmics","A-ha","Duran Duran"], correct:0},
+  {question:"Which 1980s band had a hit with 'Shout'?", answers:["Tears for Fears","Duran Duran","Simple Minds","Spandau Ballet"], correct:0},
+  {question:"Who sang 'I Still Haven't Found What I'm Looking For'?", answers:["U2","Simple Minds","Tears for Fears","Duran Duran"], correct:0},
+  {question:"Which 1980s singer sang 'Private Dancer'?", answers:["Tina Turner","Madonna","Whitney Houston","Cyndi Lauper"], correct:0}
 ];
 
-function shuffle(array){
-  for(let i=array.length-1;i>0;i--){
-    const j=Math.floor(Math.random()*(i+1));
-    [array[i],array[j]]=[array[j],array[i]];
-  }
-  return array;
-}
+function shuffle(array){for(let i=array.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[array[i],array[j]]=[array[j],array[i]];}return array;}
 
-let selectedQuestions=[];
-let current=0;
-let score=0;
-let userAnswers=[];
+let selectedQuestions=[], current=0, score=0, userAnswers=[];
 
 function pickRandomQuestions(){
-  selectedQuestions = shuffle([...questions]).slice(0,12).map(q=>{
-    const shuffledAnswers = shuffle([...q.answers]);
-    const correctIndex = shuffledAnswers.indexOf(q.answers[q.correct]);
+  selectedQuestions=shuffle([...questions]).slice(0,12).map(q=>{
+    const shuffledAnswers=shuffle([...q.answers]);
+    const correctIndex=shuffledAnswers.indexOf(q.answers[q.correct]);
     return {...q, answers:shuffledAnswers, correct:correctIndex};
   });
-  userAnswers = [];
+  userAnswers=[];
 }
 
 function showQuestion(){
@@ -73,7 +114,7 @@ function showQuestion(){
       const ansText=userAns!=null?q.answers[userAns]:'<em>Not answered</em>';
       if(userAns===q.correct){
         resultHTML+=`<p>${i+1}. ${q.question}<br><span class='correct-answer'>Your answer: ${ansText} ✅</span></p>`;
-      } else {
+      }else{
         resultHTML+=`<p>${i+1}. ${q.question}<br><span class='wrong-answer'>Your answer: ${ansText} ❌</span><br><span class='correct-answer'>Correct answer: ${correctAns}</span></p>`;
       }
     });
@@ -83,11 +124,8 @@ function showQuestion(){
   }
   const q=selectedQuestions[current];
   const quizDiv=document.getElementById('quiz');
-  quizDiv.innerHTML=`<div class='question-block'>
-  <div class='question'>${current+1}. ${q.question}</div>
-  <div class='options'>${q.answers.map((a,i)=>`<label><input type='radio' name='q' value='${i}'>${a}</label>`).join('')}</div>
-  <button id='nextBtn'>Next</button>
-  </div>`;
+  quizDiv.style.display='block';
+  quizDiv.innerHTML=`<div class='question-block'><div class='question'>${current+1}. ${q.question}</div><div class='options'>${q.answers.map((a,i)=>`<label><input type='radio' name='q' value='${i}'>${a}</label>`).join('')}</div><button id='nextBtn'>Next</button></div>`;
   document.getElementById('nextBtn').onclick=()=>{
     const selected=document.querySelector('input[name=q]:checked');
     if(selected){
@@ -96,22 +134,12 @@ function showQuestion(){
       if(selectedIndex===q.correct) score++;
       current++;
       showQuestion();
-    }else{
-      alert('Please select an answer');
-    }
+    }else alert('Please select an answer');
   };
 }
 
-function restartQuiz(){
-  current=0;
-  score=0;
-  pickRandomQuestions();
-  document.getElementById('result').style.display='none';
-  document.getElementById('quiz').style.display='block';
-  showQuestion();
-}
+function restartQuiz(){current=0;score=0;pickRandomQuestions();document.getElementById('result').style.display='none';showQuestion();}
 
-// Auto-start quiz
 restartQuiz();
 </script>
 </body>
