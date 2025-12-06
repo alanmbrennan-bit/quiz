@@ -21,6 +21,7 @@ button{padding:12px 20px;font-size:16px;border:none;border-radius:8px;background
 <div id="result" style="display:none;text-align:center;"></div>
 </div>
 <script>
+// Sample full 50-question pool (replace with your full questions)
 const questions = [
   {question:"Which Premier League club had the lowest points total ever?",answers:["Huddersfield Town","Derby County","Sunderland","Portsmouth"],correct:1},
   {question:"Which player recorded the first perfect hat-trick in the Premier League?",answers:["Jimmy Floyd Hasselbaink","Robbie Fowler","Sergio Agüero","Les Ferdinand"],correct:1},
@@ -33,7 +34,49 @@ const questions = [
   {question:"Which 1980s synth-pop band released 'Architecture & Morality'?",answers:["OMD","Ultravox","Depeche Mode","Human League"],correct:0},
   {question:"Which Premier League club was deducted 9 points for administration?",answers:["Portsmouth","Leeds United","Bolton Wanderers","Wigan Athletic"],correct:0},
   {question:"Which Beatles track used tape loops by John Lennon?",answers:["Tomorrow Never Knows","Strawberry Fields","Penny Lane","Help!"],correct:0},
-  {question:"Which 1980s singer had hit '99 Luftballons'?",answers:["Nena","Sabrina","Kim Wilde","Sandra"],correct:0}
+  {question:"Which 1980s singer had hit '99 Luftballons'?",answers:["Nena","Sabrina","Kim Wilde","Sandra"],correct:0},
+  {question:"Which Premier League team won the first ever title?",answers:["Manchester United","Leeds United","Arsenal","Liverpool"],correct:0},
+  {question:"Who won the 1983 UK Top 40 with 'Total Eclipse of the Heart'?",answers:["Bonnie Tyler","Cyndi Lauper","Madonna","Pat Benatar"],correct:0},
+  {question:"Which 1960s band had Brian Jones as a founding member?",answers:["The Rolling Stones","The Beatles","The Who","The Kinks"],correct:0},
+  {question:"Which Premier League player scored most goals in 2010-11 season?",answers:["Dimitar Berbatov","Carlos Tevez","Robin van Persie","Wayne Rooney"],correct:2},
+  {question:"Which 1980s band released the album 'Rio'?",answers:["Duran Duran","Spandau Ballet","Simple Minds","A-ha"],correct:0},
+  {question:"Which 1960s Beatles song features a string quartet?",answers:["Eleanor Rigby","Yesterday","Penny Lane","Strawberry Fields Forever"],correct:0},
+  {question:"Which Premier League club is nicknamed 'The Foxes'?",answers:["Leicester City","West Bromwich Albion","Fulham","Crystal Palace"],correct:0},
+  {question:"Which 1980s singer released 'Sweet Dreams'?",answers:["Eurythmics","Pat Benatar","Madonna","Cyndi Lauper"],correct:0},
+  {question:"Which Premier League manager won the league with Leicester City in 2015-16?",answers:["Claudio Ranieri","Jose Mourinho","Arsene Wenger","Roberto Mancini"],correct:0},
+  {question:"Which 1960s band performed 'House of the Rising Sun'?",answers:["The Animals","The Rolling Stones","The Kinks","The Who"],correct:0},
+  {question:"Which 1980s pop duo sang 'West End Girls'?",answers:["Pet Shop Boys","Wham!","Eurythmics","Duran Duran"],correct:0},
+  {question:"Which Premier League player won the PFA Player of the Year in 2009?",answers:["Cristiano Ronaldo","Wayne Rooney","Ryan Giggs","Steven Gerrard"],correct:0},
+  {question:"Which 1960s singer had hits 'Hit the Road Jack' and 'Georgia on My Mind'?",answers:["Ray Charles","Elvis Presley","Frank Sinatra","Otis Redding"],correct:0},
+  {question:"Which Premier League team is nicknamed 'The Toffees'?",answers:["Everton","Aston Villa","Tottenham","West Ham"],correct:0},
+  {question:"Which 1980s singer released 'Tainted Love'?",answers:["Soft Cell","Depeche Mode","OMD","Human League"],correct:0},
+  {question:"Which Premier League player scored the fastest hat-trick?",answers:["Sadio Mane","Thierry Henry","Robbie Fowler","Gabriel Agbonlahor"],correct:0},
+  {question:"Which 1960s band recorded 'My Generation'?",answers:["The Who","The Beatles","The Rolling Stones","The Kinks"],correct:0},
+  {question:"Which Premier League club has won most titles?",answers:["Manchester United","Liverpool","Arsenal","Chelsea"],correct:0},
+  {question:"Which 1980s singer released 'Billie Jean'?",answers:["Michael Jackson","Prince","Madonna","George Michael"],correct:0},
+  {question:"Which Premier League team is nicknamed 'The Gunners'?",answers:["Arsenal","Tottenham","Chelsea","Liverpool"],correct:0},
+  {question:"Which 1960s Beatles song features backwards tape effects?",answers:["Tomorrow Never Knows","Yellow Submarine","Help!","Lucy in the Sky with Diamonds"],correct:0},
+  {question:"Which 1980s band had the album 'Hounds of Love'?",answers:["Kate Bush","Eurythmics","Duran Duran","Simple Minds"],correct:0},
+  {question:"Which Premier League club is nicknamed 'The Magpies'?",answers:["Newcastle United","Sunderland","West Ham","Leeds United"],correct:0},
+  {question:"Which 1960s band had the hit 'Paint It Black'?",answers:["The Rolling Stones","The Kinks","The Who","The Beatles"],correct:0},
+  {question:"Which 1980s singer released 'Girls Just Want to Have Fun'?",answers:["Cyndi Lauper","Madonna","Pat Benatar","Kim Wilde"],correct:0},
+  {question:"Which Premier League club is nicknamed 'The Red Devils'?",answers:["Manchester United","Liverpool","Arsenal","Chelsea"],correct:0},
+  {question:"Which 1960s singer released 'I Got You Babe'?",answers:["Sonny & Cher","The Beatles","The Kinks","The Monkees"],correct:0},
+  {question:"Which Premier League team is nicknamed 'The Citizens'?",answers:["Manchester City","Tottenham","Everton","Leicester City"],correct:0},
+  {question:"Which 1980s band released 'Blue Monday'?",answers:["New Order","Duran Duran","Depeche Mode","Pet Shop Boys"],correct:0},
+  {question:"Which Premier League player scored 32 goals in 2017-18?",answers:["Mohamed Salah","Harry Kane","Sergio Agüero","Romelu Lukaku"],correct:0},
+  {question:"Which 1960s band had the hit 'Sunshine of Your Love'?",answers:["Cream","The Rolling Stones","The Beatles","The Who"],correct:0},
+  {question:"Which Premier League team won the 1998-99 treble?",answers:["Manchester United","Arsenal","Liverpool","Chelsea"],correct:0},
+  {question:"Which 1980s singer released 'Like a Virgin'?",answers:["Madonna","Cyndi Lauper","Pat Benatar","Kim Wilde"],correct:0},
+  {question:"Which Premier League player has most assists in 2020-21?",answers:["Kevin De Bruyne","Bruno Fernandes","Mohamed Salah","Harry Kane"],correct:0},
+  {question:"Which 1960s band recorded 'A Whiter Shade of Pale'?",answers:["Procol Harum","The Rolling Stones","The Kinks","The Beatles"],correct:0},
+  {question:"Which Premier League club is nicknamed 'The Saints'?",answers:["Southampton","Leicester City","Everton","West Brom"],correct:0},
+  {question:"Which 1980s singer released 'Wake Me Up Before You Go-Go'?",answers:["Wham!","Duran Duran","Eurythmics","Pet Shop Boys"],correct:0},
+  {question:"Which Premier League club is nicknamed 'The Blades'?",answers:["Sheffield United","West Ham","Aston Villa","Tottenham"],correct:0},
+  {question:"Which 1960s singer had the hit 'Stand By Me'?",answers:["Ben E. King","Elvis Presley","Ray Charles","Otis Redding"],correct:0},
+  {question:"Which Premier League club is nicknamed 'The Hammers'?",answers:["West Ham","Chelsea","Arsenal","Liverpool"],correct:0},
+  {question:"Which 1980s band released 'Don't You Want Me'?",answers:["Human League","Depeche Mode","OMD","Eurythmics"],correct:0},
+  {question:"Which Premier League player scored most hat-tricks in a season?",answers:["Sergio Agüero","Alan Shearer","Harry Kane","Thierry Henry"],correct:0}
 ];
 
 function shuffle(array){
