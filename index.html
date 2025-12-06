@@ -45,12 +45,16 @@ function shuffle(array){
 }
 
 let selectedQuestions=[];
-function pickRandomQuestions(){
-  selectedQuestions = shuffle([...questions]).slice(0,12);
-}
+let current=0;
+let score=0;
 
-let current = 0;
-let score = 0;
+function pickRandomQuestions(){
+  selectedQuestions = shuffle([...questions]).slice(0,12).map(q=>{
+    const shuffledAnswers = shuffle([...q.answers]);
+    const correctIndex = shuffledAnswers.indexOf(q.answers[q.correct]);
+    return {...q, answers:shuffledAnswers, correct:correctIndex};
+  });
+}
 
 function showQuestion(){
   if(current>=selectedQuestions.length){
@@ -88,9 +92,8 @@ function restartQuiz(){
   showQuestion();
 }
 
-// Auto-start
-pickRandomQuestions();
-showQuestion();
+// Auto-start quiz
+restartQuiz();
 </script>
 </body>
 </html>
