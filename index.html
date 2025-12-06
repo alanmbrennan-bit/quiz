@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Nicky's Festive Quiz</title>
+  <style>
+    :root{--bg:#0f1724;--card:#0b1220;--accent:#ef4444;--muted:#94a3b8;--glass: rgba(255,255,255,0.03)}
+    body{font-family:Inter, system-ui, Arial; background:linear-gradient(135deg,#071225 0%, #0b2030 100%); color:#e6eef6; margin:0; padding:24px;}
+    .container{max-width:900px;margin:0 auto;background:var(--card);padding:22px;border-radius:12px;box-shadow:0 8px 30px rgba(2,6,23,0.6)}
+    h1{margin:0 0 8px;font-size:28px}
+    .meta{color:var(--muted);margin-bottom:18px}
+    .start {display:flex;gap:8px;align-items:center;margin-bottom:14px}
+    input[type=text]{padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:var(--glass);color:inherit}
+    button{background:var(--accent);border:none;padding:10px 14px;border-radius:8px;color:#fff;cursor:pointer}
+    .question-card{background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent); padding:18px;border-radius:10px}
+    .options{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+    .option{padding:12px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);cursor:pointer}
+    .option.correct{outline:3px solid rgba(34,197,94,0.15);}
+    .option.wrong{opacity:0.6}
+    .footer{display:flex;justify-content:space-between;align-items:center;margin-top:14px;color:var(--muted)}
+    .leaderboard{margin-top:18px}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:8px;text-align:left;border-bottom:1px solid rgba(255,255,255,0.03)}
+    .small{font-size:13px;color:var(--muted)}
+    .center{text-align:center}
+    @media(max-width:640px){.options{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Nicky's Festive Quiz</h1>
+    <div class="meta">50 questions — Premier League football &amp; music from the 1960s and 1980s. Multiple choice (4 answers).</div>
+
+    <div class="start">
+      <label for="playerName" class="small">Your name:</label>
+      <input id="playerName" type="text" placeholder="Enter name to record score" />
+      <button id="startBtn">Start Quiz</button>
+      <button id="viewLb">View Leaderboard</button>
+    </div>
+
+    <div id="quizArea" style="display:none">
+      <div class="question-card">
+        <div id="progress" class="small"></div>
+        <h2 id="questionText">Question</h2>
+        <div class="options" id="options"></div>
+        <div class="footer">
+          <div class="small" id="feedback"></div>
+          <div>
+            <button id="nextBtn" style="display:none">Next</button>
+            <button id="quitBtn">Quit</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="resultArea" style="display:none;margin-top:12px">
+      <h2>Quiz complete</h2>
+      <p id="resultText"></p>
+      <div>
+        <label for="saveName" class="small">Name to show on leaderboard:</label>
+        <input id="saveName" type="text" />
+        <button id="saveScoreBtn">Save Score</button>
+      </div>
+    </div>
+
+    <div id="leaderboardArea" class="leaderboard" style="display:none">
+      <h3>Leaderboard</h3>
+      <table id="leaderboardTable"><thead><tr><th>Rank</th><th>Name</th><th>Score</th><th>Date</th></tr></thead><tbody></tbody></table>
+      <div style="margin-top:8px" class="small">Leaderboard is stored locally in your browser. To share a global leaderboard you'll need a server or GitHub API integration — see comments in the HTML file.</div>
+    </div>
+
+    <div style="margin-top:14px;color:var(--muted);font-size:13px">Tip: You can publish this single HTML file to GitHub Pages (push it to a repo's root or the gh-pages branch).</div>
+  </div>
+
+<script>
+// --- Questions data (50 questions) ---
+const questions = [
+  // HARDER PREMIER LEAGUE (15)
+  {q:"Which Premier League club had the lowest points total ever (record low) with 11 points?",a:["Huddersfield Town","Derby County","Sunderland","Portsmouth"],correct:1},
+  {q:"Which player recorded the first *perfect hat-trick* (left foot, right foot, header) in the Premier League?",a:["Jimmy Floyd Hasselbaink","Robbie Fowler","Sergio Agüero","Les Ferdinand"],correct:1},
+  {q:"Which club was deducted 9 points in the Premier League era for entering administration?",a:["Portsmouth","Leeds United","Bolton Wanderers","Wigan Athletic"],correct:0},
+  {q:"Who is the only goalkeeper to win the Premier League Golden Glove with **three different clubs**?",a:["Mark Schwarzer","Petr Čech","David James","Brad Friedel"],correct:2},
+  {q:"Which manager has the highest Premier League points‑per‑game average (minimum 50 games)?",a:["Pep Guardiola","Jurgen Klopp","Antonio Conte","Sir Alex Ferguson"],correct:0},
+  {q:"Which team conceded the **fastest goal** in Premier League history (7.69 seconds)?",a:["Aston Villa","Watford","Southampton","Bournemouth"],correct:2},
+  {q:"Which player holds the Premier League record for most **headed goals**?",a:["Andy Carroll","Olivier Giroud","Peter Crouch","Alan Shearer"],correct:2},
+  {q:"Which defender has the most Premier League **own goals** ever?",a:["Richard Dunne","Jamie Carragher","Martin Škrtel","Phil Jagielka"],correct:0},
+  {q:"Who is the only Premier League player to score **five goals in one match** as a substitute?",a:["Ole Gunnar Solskjær","Jermain Defoe","Dimitar Berbatov","Andy Cole"],correct:0},
+  {q:"Which club completed the fewest successful passes in a Premier League match (record low: 71)?",a:["Stoke City","Cardiff City","Sunderland","Wimbledon"],correct:3},
+  {q:"Which foreign player has made the most Premier League assists?",a:["David Silva","Kevin De Bruyne","Cesc Fàbregas","Ryan Giggs"],correct:2},
+  {q:"Which team has been relegated the most times from the Premier League?",a:["Crystal Palace","Sunderland","Norwich City","West Brom"],correct:2},
+  {q:"Who scored the Premier League’s first **perfect hat‑trick of penalties**?",a:["Yaya Touré","Leighton Baines","Bruno Fernandes","James Milner"],correct:1},
+  {q:"Which club had the longest unbeaten away run in Premier League history?",a:["Arsenal","Liverpool","Chelsea","Manchester United"],correct:3},
+  {q:"Who is the only player to score in **46 consecutive Premier League matches** without being substituted?",a:["Frank Lampard","Harry Kane","Jamie Vardy","Sadio Mané"],correct:3},
+
+  // HARDER 1960s MUSIC (10)
+  {q:"Which 1960s band created one of the first rock concept albums, *The Pretty Things Are In Bed Now*?",a:["The Pretty Things","The Moody Blues","King Crimson","The Kinks"],correct:0},
+  {q:"The track 'Tomorrow Never Knows' used tape loops created mainly by which Beatle?",a:["Paul McCartney","John Lennon","George Harrison","Ringo Starr"],correct:0},
+  {q:"Which producer is known for the 'Wall of Sound' technique used on many 1960s hits?",a:["Phil Spector","George Martin","Berry Gordy","Tom Wilson"],correct:0},
+  {q:"Which 1967 album is considered the first true **rock opera**?",a:["The Who – *A Quick One*","The Kinks – *Something Else*","The Moody Blues – *Days of Future Passed*","The Beach Boys – *Smile*"],correct:0},
+  {q:"Which American singer recorded the influential 1964 folk album *The Times They Are A‑Changin'*?",a:["Bob Dylan","Joan Baez","Joni Mitchell","Paul Simon"],correct:0},
+  {q:"Which 1960s guitarist pioneered the use of controlled **feedback** in rock?",a:["Eric Clapton","Jeff Beck","Jimi Hendrix","Pete Townshend"],correct:2},
+  {q:"Which girl group had the 1961 hit 'Will You Love Me Tomorrow'?",a:["The Ronettes","The Crystals","The Shirelles","Martha & The Vandellas"],correct:2},
+  {q:"Which 1960s Motown group originally went by the name 'The Primettes'?",a:["The Temptations","The Supremes","Martha & The Vandellas","Four Tops"],correct:1},
+  {q:"Which Beatles song was banned by the BBC for supposed drug references?",a:["Lucy in the Sky with Diamonds","Day Tripper","A Day in the Life","Rain"],correct:2},
+  {q:"Who played bass on most of The Beach Boys' 1960s recordings, instead of Brian Wilson?",a:["Joe Osborn","James Jamerson","Carol Kaye","Hal Blaine"],correct:2},
+
+  // HARDER 1980s MUSIC (15)
+  {q:"Which 1980s band was the first to use the **Fairlight CMI** as a primary composing tool?",a:["Peter Gabriel","Art of Noise","New Order","Yazoo"],correct:1},
+  {q:"Which iconic 1980s track was built around a reversed guitar sample and inspired the gated‑reverb drum trend?",a:["In the Air Tonight","Take On Me","Ashes to Ashes","Bette Davis Eyes"],correct:0},
+  {q:"Which 1980s band pioneered the 'Madchester' sound with the album *Bummed*?",a:["The Stone Roses","Happy Mondays","The Charlatans","James"],correct:1},
+  {q:"Which U2 track features a guitar sound created using a digital delay line set to dotted‑eighth notes?",a:["Where the Streets Have No Name","With or Without You","Pride (In the Name of Love)","New Year’s Day"],correct:0},
+  {q:"Which 1980s pop artist used the LinnDrum extensively on the album *1999*?",a:["Prince","Madonna","Phil Collins","Peter Gabriel"],correct:0},
+  {q:"Which band created the influential 1982 post‑punk album *Pornography*?",a:["Joy Division","The Cure","Siouxsie and the Banshees","Echo & the Bunnymen"],correct:1},
+  {q:"Which 1980s hit was originally offered to Cliff Richard before becoming a global #1 for another duo?",a:["Don't You Want Me","Careless Whisper","Relax","Never Gonna Give You Up"],correct:1},
+  {q:"Which synth‑pop band released the 1981 album *Architecture & Morality*?",a:["OMD","Ultravox","Depeche Mode","Human League"],correct:0},
+  {q:"Which guitarist performed the famous solo on Michael Jackson’s 'Beat It'?",a:["Slash","Eddie Van Halen","Steve Lukather","Jeff Beck"],correct:1},
+  {q:"Which band released the influential 1988 album *Spirit of Eden*?",a:["Talk Talk","Japan","Simple Minds","Cocteau Twins"],correct:0},
+  {q:"Which 1980s New Wave band originally formed under the name 'Composition of Sound'?",a:["Depeche Mode","The Cure","A‑ha","OMD"],correct:0},
+  {q:"Which 1980s single used an early form of **sampling** to loop an orchestra hit from the Fairlight CMI?",a:["Owner of a Lonely Heart","Tainted Love","West End Girls","She Blinded Me with Science"],correct:3},
+  {q:"Which singer had a massive 1980s hit with the anti‑war song '99 Luftballons'?",a:["Nena","Sabrina","Kim Wilde","Sandra"],correct:0},
+  {q:"Which 1980s group fused reggae and new wave on the album *Labour of Love*?",a:["UB40","The Police","Madness","Steel Pulse"],correct:0},
+  {q:"Which 1980s songwriter produced the soundtrack to *The Breakfast Club* and wrote 'Don't You (Forget About Me)'?",a:["Jim Kerr","Billy Idol","Keith Forsey","Gary Numan"],correct:2}
+];
+
+// --- Quiz logic ---
+let currentIndex = 0;
+let score = 0;
+let shuffled = [];
+const totalQuestions = questions.length;
+
+const startBtn = document.getElementById('startBtn');
+const viewLbBtn = document.getElementById('viewLb');
+const quizArea = document.getElementById('quizArea');
+const questionText = document.getElementById('questionText');
+const optionsDiv = document.getElementById('options');
+const progressDiv = document.getElementById('progress');
+const feedback = document.getElementById('feedback');
+const nextBtn = document.getElementById('nextBtn');
+const quitBtn = document.getElementById('quitBtn');
+const playerNameInput = document.getElementById('playerName');
+const resultArea = document.getElementById('resultArea');
+const resultText = document.getElementById('resultText');
+const saveNameInput = document.getElementById('saveName');
+const saveScoreBtn = document.getElementById('saveScoreBtn');
+const leaderboardArea = document.getElementById('leaderboardArea');
+const lbTableBody = document.querySelector('#leaderboardTable tbody');
+
+function shuffleArray(arr){
+  const copy = arr.slice();
+  for(let i=copy.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [copy[i],copy[j]] = [copy[j],copy[i]];
+  }
+  return copy;
+}
+
+function startQuiz(){
+  const name = playerNameInput.value.trim();
+  if(!name){
+    alert('Please enter your name before starting so your score can be saved.');
+    playerNameInput.focus();
+    return;
+  }
+  shuffled = shuffleArray(questions);
+  currentIndex = 0; score = 0;
+  quizArea.style.display='block';
+  resultArea.style.display='none';
+  leaderboardArea.style.display='none';
+  playerNameInput.disabled = true;
+  saveNameInput.value = name;
+  renderQuestion();
+}
+
+function renderQuestion(){
+  nextBtn.style.display='none';
+  feedback.textContent='';
+  const q = shuffled[currentIndex];
+  progressDiv.textContent = `Question ${currentIndex+1} of ${totalQuestions}`;
+  questionText.textContent = q.q;
+  optionsDiv.innerHTML='';
+  q.a.forEach((opt,i)=>{
+    const btn = document.createElement('button');
+    btn.className='option';
+    btn.textContent = opt;
+    btn.onclick = ()=>selectOption(i, btn);
+    optionsDiv.appendChild(btn);
+  });
+}
+
+function selectOption(choice, btn){
+  const q = shuffled[currentIndex];
+  // disable all options
+  Array.from(optionsDiv.children).forEach(b=>b.disabled=true);
+  if(choice === q.correct){
+    score++;
+    btn.classList.add('correct');
+    feedback.textContent = 'Correct!';
+  } else {
+    btn.classList.add('wrong');
+    // highlight correct
+    const correctBtn = Array.from(optionsDiv.children)[q.correct];
+    if(correctBtn) correctBtn.classList.add('correct');
+    feedback.textContent = 'Wrong.';
+  }
+  // show next or finish
+  if(currentIndex < totalQuestions-1){
+    nextBtn.style.display='inline-block';
+  } else {
+    // finish
+    setTimeout(finishQuiz, 600);
+  }
+}
+
+nextBtn.addEventListener('click', ()=>{
+  currentIndex++;
+  renderQuestion();
+});
+
+quitBtn.addEventListener('click', ()=>{
+  if(confirm('Quit quiz? Your progress will be lost.')){
+    resetUI();
+  }
+});
+
+function finishQuiz(){
+  quizArea.style.display='none';
+  resultArea.style.display='block';
+  resultText.textContent = `You scored ${score} out of ${totalQuestions}.`;
+  saveNameInput.focus();
+}
+
+function resetUI(){
+  quizArea.style.display='none';
+  resultArea.style.display='none';
+  leaderboardArea.style.display='none';
+  playerNameInput.disabled = false;
+}
+
+// --- Leaderboard (localStorage) ---
+const LB_KEY = 'nickys_festive_quiz_leaderboard_v1';
+function loadLeaderboard(){
+  const raw = localStorage.getItem(LB_KEY);
+  return raw ? JSON.parse(raw) : [];
+}
+function saveLeaderboard(list){
+  localStorage.setItem(LB_KEY, JSON.stringify(list));
+}
+
+saveScoreBtn.addEventListener('click', ()=>{
+  const name = saveNameInput.value.trim();
+  if(!name){ alert('Enter a name to save on the leaderboard.'); saveNameInput.focus(); return; }
+  const entry = {name, score, date: new Date().toISOString()};
+  const lb = loadLeaderboard();
+  lb.push(entry);
+  // sort desc by score then earliest date
+  lb.sort((a,b)=> b.score - a.score || new Date(a.date) - new Date(b.date));
+  // keep top 100
+  saveLeaderboard(lb.slice(0,100));
+  showLeaderboard();
+  resultArea.style.display='none';
+});
+
+function showLeaderboard(){
+  const lb = loadLeaderboard();
+  lbTableBody.innerHTML='';
+  lb.forEach((entry,i)=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${i+1}</td><td>${escapeHtml(entry.name)}</td><td>${entry.score}</td><td>${(new Date(entry.date)).toLocaleString()}</td>`;
+    lbTableBody.appendChild(tr);
+  });
+  leaderboardArea.style.display='block';
+}
+
+startBtn.addEventListener('click', startQuiz);
+viewLbBtn.addEventListener('click', ()=>{ showLeaderboard(); leaderboardArea.style.display='block'; });
+
+// small helper
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[c]; }); }
+
+// Preload: show leaderboard if exists
+if(loadLeaderboard().length>0){ document.getElementById('leaderboardArea').style.display='block'; showLeaderboard(); }
+
+</script>
+
+<!--
+INSTRUCTIONS & NOTES
+- This single-file quiz (index.html) is ready to publish to GitHub Pages. Create a new repository and push this file as index.html to the main branch (or enable GitHub Pages on the repo) to host.
+- Leaderboard: currently stored locally in the user's browser (localStorage). That means the leaderboard is shared only on that device/browser.
+- To enable a global/shared leaderboard when hosted on GitHub Pages you have three recommended options:
+  1) Add a lightweight server (e.g., Firebase Realtime Database or Firestore). Replace the localStorage functions with REST calls to your database.
+  2) Use the GitHub Gist or a dedicated JSON file in a repo and write a small backend (or use GitHub Actions) to append scores (requires authentication and CORS setup).
+  3) Host a tiny server (Netlify functions, Vercel serverless, or any simple endpoint) that accepts POSTs with {name,score,date} and returns the updated leaderboard. Then update saveLeaderboard() and loadLeaderboard() to call that endpoint.
+- If you want I can modify the code to use Firebase (public rules) or show an example using GitHub Gist + a personal access token — but you'll need to supply credentials when you publish.
+-->
+
+</body>
+</html>
